@@ -264,6 +264,16 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					return right.insert(item);
 				} else {
 					right = new AVLNode(item);
+					//attempting AVLTree insert
+					/*
+					if(left.height() - right.height() == 2) {
+						if(item.compareTo(left.element) > 0) {
+							rotateLeftChild(this);
+						} else {
+							rotateDoubleLeftChild(this);
+						}
+					}
+					*/
 					modCount++;
 					return true;
 				}
@@ -272,6 +282,15 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					return left.insert(item);
 				} else {
 					left = new AVLNode(item);
+					//attempting AVLTree insert
+					/*
+					if(item.compareTo(left.element) > 0) {
+							rotateRightChild(this);
+						} else {
+							rotateLeftRightChild(this);
+						}
+					}
+					*/
 					modCount++;
 					return true;
 				}
@@ -279,6 +298,34 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				return false;
 			}
 		}
+		
+		//Attempting AVLNode rotateLeftChild 
+		/*
+		public AVLNode rotateLeftChild(AVLNode node) {
+			return node;
+		}
+		*/
+		
+		//Attempting AVLNode rotateDoubleLeftChild 
+		/*
+		public AVLNode rotateDoubleLeftChild(AVLNode node) {
+			return node;
+		}
+		*/
+		
+		//Attempting AVLNode rotateRighttChild 
+		/*
+		public AVLNode rotateRightChild(AVLNode node) {
+			return node;
+		}
+		*/
+		
+		//Attempting AVLNode rotateDoubleRighttChild 
+		/*
+		public AVLNode rotateDoubleRightChild(AVLNode node) {
+			return node;
+		}
+		*/
 		
 		/**
 		 * Removes the provided item from the AVLNode
