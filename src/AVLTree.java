@@ -366,10 +366,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			this.mod = true;
 		}
 		
-		public void setFalse() {
-			this.mod = false;
-		}
-
 		public boolean getValue() {
 			return mod;
 		}
