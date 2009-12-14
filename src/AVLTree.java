@@ -153,6 +153,15 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	}
 	
 	/**
+	 * TODO Fill in placeholder
+	 * 
+	 * @return
+	 */
+	public int getRotationCount() {
+		return 0;
+	}
+	
+	/**
 	 * Get method that returns a pointer to the item provided
 	 * 
 	 * @param item item to be found in the AVLTree
