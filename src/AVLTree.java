@@ -93,7 +93,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	/**
 	 * Method that returns a String representation of the AVLTree
 	 * 
-	 * @return 	string in [element, element] format with the AVLTree AVLNodes in order 
+	 * @return 	string in [element, element] format with the AVLTree AVLNodes in inorder 
 	 */
 	public String toString() {
 		String temp = "";
@@ -110,6 +110,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		return temp;
 	}
 	
+	/**
+	 * Method that returns a String representation of the AVLTree
+	 * 
+	 * @return 	string in [element, element] format with the AVLTree AVLNodes in preorder 
+	 */
 	public String toStringPre() {
 		String temp = "";
 		if(root == null) {
@@ -148,7 +153,9 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			throw new IllegalArgumentException();
 		}
 		if(root != null) {
-			return root.insert(item);
+			modWrapper mod = new modWrapper();
+			root.insert(item, mod);
+			return mod.getValue();
 		} else {
 			root = new AVLNode(item);
 			modCount++;
@@ -293,50 +300,28 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		 * @param item	item to be inserted as a child to the AVLNode
 		 * @return 	true if insert successful; false if not
 		 */
-		public boolean insert(T item) {
+		public boolean insert(T item, modWrapper mod) {
 			if(item.compareTo(element) < 0) {
 				if(left != null) {
-					boolean temp = left.insert(item);
-					int rightheight = 0;
-					if(right != null) {
-						rightheight = right.height()+1; 
-					}
-					if(left.height()+1 - rightheight == 2) {
-						if(item.compareTo(left.element) < 0) {
-							rotateRight(this);
-						} else {
-							rotateLeftRight(this);
-						}
-					}
-					return temp;
+					left.insert(item, mod);
 				} else {
 					left = new AVLNode(item);
 					modCount++;
-					return true;
+					mod.setTrue();
 				}
 			} else if(item.compareTo(element) > 0) {
 				if(right != null) {
-					boolean temp = right.insert(item);
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(item.compareTo(right.element) > 0) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
-					return temp;
+					right.insert(item, mod);
 				} else {
 					right = new AVLNode(item);
 					modCount++;
-					return true;
+					mod.setTrue();
 				}
-			} else {
-				return false;
 			}
+			if(mod.getValue()) {
+				balance(item, this);
+			}
+			return mod.getValue();
 		}
 		
 		/**
@@ -370,50 +355,17 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else {
 				if(item.compareTo(element) > 0) {
 					right = right.remove(item, mod);
-
-					int rightheight = 0;
-					if(right != null) {
-						rightheight = right.height()+1; 
-					}
-					if(left.height()+1 - rightheight == 2) {
-						if(left.right == null) {
-							rotateRight(this);
-						} else {
-							rotateLeftRight(this);
-						}
-					}
 				} else if(item.compareTo(element) < 0) {
 					left = left.remove(item, mod);
-					
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(right.left == null) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
 				} else {
 					T temp = element;
 					AVLNode largestChildNode = findLargestChild(left);
 					element = largestChildNode.element;
 					largestChildNode.element = temp;
 					left = left.remove(temp, mod);
-					
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(right.left == null) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
+				}
+				if(mod.getValue()) {
+					balance(item, this);
 				}
 				return this;
 			}
@@ -430,6 +382,37 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				node = node.right;
 			}
 			return node;
+		}
+		
+		/**
+		 * Method that balances the AVLTree
+		 * 
+		 * @param item The item to compare to
+		 * @param node An AVLNode that should be balanced from
+		 */
+		public void balance(T item, AVLNode node) {
+			int leftheight = 0;
+			int rightheight = 0;
+			if(left != null) {
+				leftheight = left.height()+1; 
+			}
+			if(right != null) {
+				rightheight = right.height()+1; 
+			}
+			int diff = rightheight - leftheight;
+			if(diff == 2) {
+				if(right.left == null) {
+					rotateLeft(this);
+				} else {
+					rotateRightLeft(this);
+				}
+			} else if(diff == -2) {
+				if(left.right == null) {
+					rotateRight(this);
+				} else {
+					rotateLeftRight(this);
+				}
+			}
 		}
 		
 		/**
