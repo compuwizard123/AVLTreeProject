@@ -346,6 +346,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			AVLNode temp1 = node.left;
 			AVLNode temp2 = new AVLNode(node.element); 
 			temp2.right = node.right;
+			temp2.left = temp1.right;
 			node.left = temp1.left;
 			node.element = temp1.element;
 			node.right = temp2;
@@ -365,6 +366,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			AVLNode temp1 = node.right;
 			AVLNode temp2 = new AVLNode(node.element); 
 			temp2.left = node.left;
+			temp2.right = temp1.left;
 			node.right = temp1.right;
 			node.element = temp1.element;
 			node.left = temp2;
