@@ -87,7 +87,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @return 	height of the AVLTree; -1 if AVLTree is empty
 	 */
 	public int height(){
-		return !isEmpty() ? root.height() : -1;
+		return !isEmpty() ? root.height : -1;
 	}
 	
 	/**
@@ -214,6 +214,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	private class AVLNode {
 		private T element;
+		private int height = 0;
 		private AVLNode left;
 		private AVLNode right;
 		
@@ -306,7 +307,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					left.insert(item, mod);
 				} else {
 					left = new AVLNode(item);
-					modCount++;
 					mod.setTrue();
 				}
 			} else if(item.compareTo(element) > 0) {
@@ -314,12 +314,13 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					right.insert(item, mod);
 				} else {
 					right = new AVLNode(item);
-					modCount++;
 					mod.setTrue();
 				}
 			}
 			if(mod.getValue()) {
+				setHeight();
 				balance(item, this);
+				modCount++;
 			}
 			return mod.getValue();
 		}
@@ -385,6 +386,24 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		}
 		
 		/**
+		 * 
+		 */
+		public void setHeight() {
+			int leftheight = 0, rightheight = 0;
+			if(left != null) {
+				leftheight = 1 + left.height;
+			}
+			if(right != null) {
+				rightheight = 1 + right.height;
+			}
+			if(leftheight > rightheight) {
+				height = leftheight;
+			} else { 
+				height = rightheight;
+			}
+		}
+		
+		/**
 		 * Method that balances the AVLTree
 		 * 
 		 * @param item The item to compare to
@@ -394,24 +413,26 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			int leftheight = 0;
 			int rightheight = 0;
 			if(left != null) {
-				leftheight = left.height()+1; 
+				leftheight = left.height+1; 
 			}
 			if(right != null) {
-				rightheight = right.height()+1; 
+				rightheight = right.height+1; 
 			}
-			int diff = rightheight - leftheight;
-			if(diff == 2) {
-				if(right.left == null) {
-					rotateLeft(this);
+			if(Math.abs(rightheight - leftheight) == 2) {
+				if(rightheight > leftheight) {
+					if(right.left == null) {
+						rotateLeft(this);
+					} else {
+						rotateRightLeft(this);
+					}
 				} else {
-					rotateRightLeft(this);
+					if(left.right == null) {
+						rotateRight(this);
+					} else {
+						rotateLeftRight(this);
+					}
 				}
-			} else if(diff == -2) {
-				if(left.right == null) {
-					rotateRight(this);
-				} else {
-					rotateLeftRight(this);
-				}
+				setHeight();
 			}
 		}
 		
