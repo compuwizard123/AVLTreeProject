@@ -110,7 +110,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		return temp;
 	}
 	
-	//TODO REMOVE
 	public String toStringPre() {
 		String temp = "";
 		if(root == null) {
@@ -359,14 +358,12 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else if(right == null) {
 				if(item.compareTo(element) < 0) {
 					left = left.remove(item, mod);
-
 				}
 				mod.setTrue();
 				return left;
 			} else if(left == null) {
 				if(item.compareTo(element) > 0) {
 					right = right.remove(item, mod);
-					
 				}
 				mod.setTrue();
 				return right;
@@ -435,8 +432,14 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			return node;
 		}
 		
+		/**
+		 * Method that rotates the tree right around the specified
+		 * AVLNode left child.
+		 * 
+		 * @param node The node to rotate around
+		 * @return node An AVLNode that has been rotated
+		 */
 		public AVLNode rotateRight(AVLNode node) {
-			//System.out.println("rotateRight");
 			AVLNode temp1 = node.left;
 			AVLNode temp2 = new AVLNode(node.element); 
 			temp2.right = node.right;
@@ -448,15 +451,26 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			return node;
 		}
 		
+		/**
+		 * Method that rotates the tree first right around the specified
+		 * AVLNode right child then left around the specified AVLNode 
+		 * 
+		 * @param node The node to rotate around
+		 * @return node An AVLNode that has been rotated
+		 */
 		public AVLNode rotateRightLeft(AVLNode node) {
-			System.out.println("rotateRightLeft");
 			rotateRight(node.right);
 			rotateLeft(node);
 			return node;
 		}
-		 
+		
+		/**
+		 * Method that rotates the tree left around the specified
+		 * AVLNode right child.
+		 * @param node The node to rotate around
+		 * @return node An AVLNode that has been rotated
+		 */
 		public AVLNode rotateLeft(AVLNode node) {
-			//System.out.println("rotateRight");
 			AVLNode temp1 = node.right;
 			AVLNode temp2 = new AVLNode(node.element); 
 			temp2.left = node.left;
@@ -467,9 +481,15 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			rotationCount++;
 			return node;
 		}
-		 
+		
+		/**
+		 * Method that rotates the tree first left around the specified
+		 * AVLNode left child then right around the specified AVLNode 
+		 * 
+		 * @param node The node to rotate around
+		 * @return node An AVLNode that has been rotated
+		 */
 		public AVLNode rotateLeftRight(AVLNode node) {
-			System.out.println("rotateLeftRight");
 			rotateLeft(node.left);
 			rotateRight(node);
 			return node;
