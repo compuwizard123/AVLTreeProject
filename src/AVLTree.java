@@ -309,7 +309,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 							rotateDoubleLeft(this);
 						}
 					}
-					
 					return temp;
 				} else {
 					left = new AVLNode(item);
@@ -341,8 +340,65 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			}
 		}
 		
+		/**
+		 * Removes the provided item from the AVLNode
+		 * In the event of the AVLNode having two children, the
+		 * algorithm finds the largest left child.
+		 * 
+		 * @param item 	the item that will be removed from the AVLNode
+		 * @param mod 	ModWrapper boolean that will be set to true if remove successful
+		 * @return 	AVLNode that is removed
+		 */
+		public AVLNode remove(T item, modWrapper mod) {
+			if(left == null && right == null) {
+				if(item.compareTo(element) == 0) {
+					mod.setTrue();
+					return null;
+				}
+				return this;
+			} else if(right == null) {
+				if(item.compareTo(element) < 0) {
+					left = left.remove(item, mod);
+				}
+				mod.setTrue();
+				return left;
+			} else if(left == null) {
+				if(item.compareTo(element) > 0) {
+					right = right.remove(item, mod);
+				}
+				mod.setTrue();
+				return right;
+			} else {
+				if(item.compareTo(element) > 0) {
+					right = right.remove(item, mod);
+				} else if(item.compareTo(element) < 0) {
+					left = left.remove(item, mod);
+				} else {
+					T temp = element;
+					AVLNode largestChildNode = findLargestChild(left);
+					element = largestChildNode.element;
+					largestChildNode.element = temp;
+					left = left.remove(temp, mod);
+				}
+				return this;
+			}
+		}
+		
+		/**
+		 * Method that finds the largest left child
+		 * 
+		 * @param node	AVLNode to look for largest left child
+		 * @return 	the largest left child of the provided AVLNode
+		 */
+		public AVLNode findLargestChild(AVLNode node) {
+			while(node.right != null) {
+				node = node.right;
+			}
+			return node;
+		}
+		
 		public AVLNode rotateRight(AVLNode node) {
-			//System.out.println("rotateRight");
+			System.out.println("rotateRight");
 			AVLNode temp1 = node.left;
 			AVLNode temp2 = new AVLNode(node.element); 
 			temp2.right = node.right;
@@ -378,63 +434,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			//System.out.println("rotateDoubleLeft");
 			rotateLeft(node.left);
 			rotateRight(node);
-			return node;
-		}
-		
-		/**
-		 * Removes the provided item from the AVLNode
-		 * In the event of the AVLNode having two children, the
-		 * algorithm finds the largest left child.
-		 * 
-		 * @param item 	the item that will be removed from the AVLNode
-		 * @param mod 	ModWrapper boolean that will be set to true if remove successful
-		 * @return 	AVLNode that is removed
-		 */
-		public AVLNode remove(T item, modWrapper mod) {
-			if(left == null && right == null) {
-				if(item.compareTo(element) == 0) {
-					mod.setTrue();
-					return null;
-				}
-				return this;
-			} else if(right == null) {
-				if(item.compareTo(element) < 0) {
-					left = left.remove(item, mod);
-				}
-				mod.setTrue();
-				return left;
-			} else if(left == null) {
-				if(item.compareTo(element) > 0) {
-					right = right.remove(item, mod);
-				}
-				mod.setTrue();
-				return right;
-			} else {
-				if(item.compareTo(element) > 0) {
-					right = right.remove(item,mod);
-				} else if(item.compareTo(element) < 0) {
-					left = left.remove(item, mod);
-				} else {
-					T temp = element;
-					AVLNode largestChildNode = findLargestChild(left);
-					element = largestChildNode.element;
-					largestChildNode.element = temp;
-					left = left.remove(temp, mod);
-				}
-				return this;
-			}
-		}
-		
-		/**
-		 * Method that finds the largest left child
-		 * 
-		 * @param node	AVLNode to look for largest left child
-		 * @return 	the largest left child of the provided AVLNode
-		 */
-		public AVLNode findLargestChild(AVLNode node) {
-			while(node.right != null) {
-				node = node.right;
-			}
 			return node;
 		}
 		
