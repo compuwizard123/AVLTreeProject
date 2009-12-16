@@ -406,6 +406,17 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					largestChildNode.element = temp;
 					left = left.remove(temp, mod);
 					
+					int leftheight = 0;
+					if(left != null) {
+						leftheight = left.height()+1; 
+					}
+					if(right.height()+1 - leftheight == 2) {
+						if(right.left == null) {
+							rotateLeft(this);
+						} else {
+							rotateRightLeft(this);
+						}
+					}
 				}
 				return this;
 			}
