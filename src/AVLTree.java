@@ -255,26 +255,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			}
 			return list;
 		}
-		
-		/**
-		 * Method that determines the height of the AVLNode
-		 * 
-		 * @return 	height of the AVLNode
-		 */
-		public int height() {
-			int leftheight = 0, rightheight = 0;
-			if(left != null) {
-				leftheight = 1 + left.height();
-			}
-			if(right != null) {
-				rightheight = 1 + right.height();
-			}
-			if(leftheight > rightheight) {
-				return leftheight;
-			} else { 
-				return rightheight;
-			}
-		}
+
 		
 		/**
 		 * Method that determines the size of the AVLNode 
@@ -307,6 +288,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					left.insert(item, mod);
 				} else {
 					left = new AVLNode(item);
+					modCount++;
 					mod.setTrue();
 				}
 			} else if(item.compareTo(element) > 0) {
@@ -314,13 +296,13 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					right.insert(item, mod);
 				} else {
 					right = new AVLNode(item);
+					modCount++;
 					mod.setTrue();
 				}
 			}
 			if(mod.getValue()) {
 				setHeight();
 				balance(item, this);
-				modCount++;
 			}
 			return mod.getValue();
 		}
