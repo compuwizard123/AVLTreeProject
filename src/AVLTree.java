@@ -298,7 +298,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		public boolean insert(T item, modWrapper mod) {
 			if(item.compareTo(element) < 0) {
 				if(left != null) {
-					boolean temp = left.insert(item, mod);
+					left.insert(item, mod);
 					int rightheight = 0;
 					if(right != null) {
 						rightheight = right.height()+1; 
@@ -310,7 +310,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 							rotateLeftRight(this);
 						}
 					}
-					return temp;
 				} else {
 					left = new AVLNode(item);
 					modCount++;
@@ -318,7 +317,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				}
 			} else if(item.compareTo(element) > 0) {
 				if(right != null) {
-					boolean temp = right.insert(item, mod);
+					right.insert(item, mod);
 					int leftheight = 0;
 					if(left != null) {
 						leftheight = left.height()+1; 
@@ -330,7 +329,6 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 							rotateRightLeft(this);
 						}
 					}
-					return temp;
 				} else {
 					right = new AVLNode(item);
 					modCount++;
