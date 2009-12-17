@@ -286,6 +286,19 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			if(item.compareTo(element) < 0) {
 				if(left != null) {
 					left.insert(item, mod);
+					if(mod.getValue()) {
+						int rightheight = 0;
+						if(right != null) {
+							rightheight = right.height+1; 
+						}
+						if(left.height+1 - rightheight == 2) {
+							if(item.compareTo(left.element) < 0) {
+								rotateRight(this);
+							} else {
+								rotateLeftRight(this);
+							}
+						}
+					}
 				} else {
 					left = new AVLNode(item);
 					modCount++;
@@ -294,6 +307,19 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else if(item.compareTo(element) > 0) {
 				if(right != null) {
 					right.insert(item, mod);
+					if(mod.getValue()) {
+						int leftheight = 0;
+						if(left != null) {
+							leftheight = left.height+1; 
+						}
+						if(right.height+1 - leftheight == 2) {
+							if(item.compareTo(right.element) > 0) {
+								rotateLeft(this);
+							} else {
+								rotateRightLeft(this);
+							}
+						}
+					}
 				} else {
 					right = new AVLNode(item);
 					modCount++;
@@ -301,8 +327,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				}
 			}
 			if(mod.getValue()) {
-				setHeight();
-				balance(item, this);
+				updateHeight();
 			}
 			return mod.getValue();
 		}
@@ -368,9 +393,9 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		}
 		
 		/**
-		 * 
+		 * Method that updates the height
 		 */
-		public void setHeight() {
+		public void updateHeight() {
 			int leftheight = 0, rightheight = 0;
 			if(left != null) {
 				leftheight = 1 + left.height;
@@ -395,10 +420,10 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			int leftheight = 0;
 			int rightheight = 0;
 			if(left != null) {
-				leftheight = left.height+1; 
+				leftheight = left.height+1;
 			}
 			if(right != null) {
-				rightheight = right.height+1; 
+				rightheight = right.height+1;
 			}
 			if(Math.abs(rightheight - leftheight) == 2) {
 				if(rightheight > leftheight) {
@@ -414,8 +439,9 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 						rotateLeftRight(this);
 					}
 				}
-				setHeight();
+				updateHeight();
 			}
+			System.out.println();
 		}
 		
 		/**
