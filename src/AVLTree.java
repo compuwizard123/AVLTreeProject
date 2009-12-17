@@ -144,11 +144,13 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	 * @exception	IllegalArgumentException if item is null
 	 */
 	public boolean insert(T item) {
+		modWrapper mod = new modWrapper();
 		if(item == null) {
 			throw new IllegalArgumentException();
 		}
 		if(root != null) {
-			return root.insert(item);
+			root.insert(item, mod);
+			return mod.getValue();
 		} else {
 			root = new AVLNode(item);
 			modCount++;
@@ -293,10 +295,10 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		 * @param item	item to be inserted as a child to the AVLNode
 		 * @return 	true if insert successful; false if not
 		 */
-		public boolean insert(T item) {
+		public boolean insert(T item, modWrapper mod) {
 			if(item.compareTo(element) < 0) {
 				if(left != null) {
-					boolean temp = left.insert(item);
+					boolean temp = left.insert(item, mod);
 					int rightheight = 0;
 					if(right != null) {
 						rightheight = right.height()+1; 
@@ -312,11 +314,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				} else {
 					left = new AVLNode(item);
 					modCount++;
-					return true;
+					mod.setTrue();
 				}
 			} else if(item.compareTo(element) > 0) {
 				if(right != null) {
-					boolean temp = right.insert(item);
+					boolean temp = right.insert(item, mod);
 					int leftheight = 0;
 					if(left != null) {
 						leftheight = left.height()+1; 
@@ -332,11 +334,10 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				} else {
 					right = new AVLNode(item);
 					modCount++;
-					return true;
+					mod.setTrue();
 				}
-			} else {
-				return false;
 			}
+			return mod.getValue();
 		}
 		
 		/**
