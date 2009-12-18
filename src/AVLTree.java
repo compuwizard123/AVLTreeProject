@@ -299,17 +299,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			if(item.compareTo(element) < 0) {
 				if(left != null) {
 					left.insert(item, mod);
-					int rightheight = 0;
-					if(right != null) {
-						rightheight = right.height()+1; 
-					}
-					if(left.height()+1 - rightheight == 2) {
-						if(item.compareTo(left.element) < 0) {
-							rotateRight(this);
-						} else {
-							rotateLeftRight(this);
-						}
-					}
+					balance(item);
 				} else {
 					left = new AVLNode(item);
 					modCount++;
@@ -318,17 +308,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else if(item.compareTo(element) > 0) {
 				if(right != null) {
 					right.insert(item, mod);
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(item.compareTo(right.element) > 0) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
+					balance(item);
 				} else {
 					right = new AVLNode(item);
 					modCount++;
@@ -336,6 +316,31 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 				}
 			}
 			return mod.getValue();
+		}
+		
+		public void balance(T item) {
+			int rightheight = 0;
+			if(right != null) {
+				rightheight = right.height()+1; 
+			}
+			int leftheight = 0;
+			if(left != null) {
+				leftheight = left.height()+1; 
+			}
+			if(leftheight - rightheight == 2) {
+				if(item.compareTo(left.element) < 0 || left.right == null) {
+					rotateRight(this);
+				} else {
+					rotateLeftRight(this);
+				}
+			}
+			if(rightheight - leftheight == 2) {
+				if(item.compareTo(right.element) > 0 || right.left == null) {
+					rotateLeft(this);
+				} else {
+					rotateRightLeft(this);
+				}
+			}
 		}
 		
 		/**
@@ -369,50 +374,17 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else {
 				if(item.compareTo(element) > 0) {
 					right = right.remove(item, mod);
-
-					int rightheight = 0;
-					if(right != null) {
-						rightheight = right.height()+1; 
-					}
-					if(left.height()+1 - rightheight == 2) {
-						if(left.right == null) {
-							rotateRight(this);
-						} else {
-							rotateLeftRight(this);
-						}
-					}
+					balance(item);
 				} else if(item.compareTo(element) < 0) {
 					left = left.remove(item, mod);
-					
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(right.left == null) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
+					balance(item);
 				} else {
 					T temp = element;
 					AVLNode largestChildNode = findLargestChild(left);
 					element = largestChildNode.element;
 					largestChildNode.element = temp;
-					left = left.remove(temp, mod);
-					
-					int leftheight = 0;
-					if(left != null) {
-						leftheight = left.height()+1; 
-					}
-					if(right.height()+1 - leftheight == 2) {
-						if(right.left == null) {
-							rotateLeft(this);
-						} else {
-							rotateRightLeft(this);
-						}
-					}
+					left = left.remove(temp, mod);	
+					balance(item);
 				}
 				return this;
 			}
