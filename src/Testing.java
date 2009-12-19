@@ -22,7 +22,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(0, b.getRotationCount());
-			points += 6;
+			points += 4;
 		}
 		
 		public void testingAVLInsertSingleRightRotation(){		
@@ -44,7 +44,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(1, b.getRotationCount());
-			points += 6;
+			points += 4;
 		}
 		
 		public void testingAVLInsertSingleRightRotationWithRoot(){		
@@ -64,7 +64,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(1, b.getRotationCount());
-			points += 5;
+			points += 4;
 		}
 	
 		public static void testingAVLInsertDoubleRightRotation(){		
@@ -86,7 +86,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(2, b.getRotationCount());
-			points += 6;
+			points += 4;
 		}
 		
 		public static void testingAVLInsertDoubleRightRotationWithRoot(){		
@@ -106,7 +106,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(2, b.getRotationCount());
-			points += 5;
+			points += 4;
 		}
 	
 		public void testingAVLInsertSingleLeftRotation(){		
@@ -128,7 +128,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(1, b.getRotationCount());
-			points += 6;
+			points += 4;
 		}
 		
 		public void testingAVLInsertSingleLeftRotationWithRoot(){		
@@ -148,7 +148,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(1, b.getRotationCount());
-			points += 5;
+			points += 4;
 		}
 	
 		public static void testingAVLInsertDoubleLeftRotation(){		
@@ -170,7 +170,7 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(2, b.getRotationCount());
-			points += 6;
+			points += 4;
 		}
 		
 		public static void testingAVLInsertDoubleLeftRotationWithRoot(){		
@@ -190,11 +190,18 @@ public class Testing extends TestCase{
 				assertEquals((boolean)v.get(k), i.hasNext());
 			}
 			assertEquals(2, b.getRotationCount());
-			points += 5;
+			points += 4;
 		}
 
+		public static void nums(int lower, int upper, Iterator i){
+			if (lower > upper) return;
+			int mid = (lower + upper)/2;
+			assertEquals(mid, i.next());
+			nums(lower, mid - 1, i);
+			nums(mid + 1, upper, i);
+		}
 		
-		public void testingRotations(){
+		public void testingStressWithNoRotations(){
 			AVLTree<Integer> b = new AVLTree<Integer>();
 
 			// No rotations at all
@@ -209,23 +216,29 @@ public class Testing extends TestCase{
 					}
 				v = v / 2;
 			}
+			nums(1,127,b.iterator());
 			assertEquals(0, b.getRotationCount());
-			points += 2;
+			points += 6;
+		}
 			
-			// Only single rotations
-			b = new AVLTree<Integer>();
-			for (int i = 1; i <= 1000; i++) b.insert(i);
-			assertEquals(990, b.getRotationCount());
-			points += 2;
+		public void testingStressWithOnlySingleLeftRotations(){
+			AVLTree<Integer> b = new AVLTree<Integer>();
+			for (int i = 1; i < 128; i++) b.insert(i);
+			nums(1, 127, b.iterator());
+			assertEquals(120, b.getRotationCount());
+			points += 6;
+		}
 			
-			//Only single rotations 
-			b = new AVLTree<Integer>();
-			for (int i = 1000; i >= 1; i--) b.insert(i);
-			assertEquals(990, b.getRotationCount());
-			points += 2;
+		public void testingStressWithOnlySingleRightRotations(){
+			AVLTree<Integer> b = new AVLTree<Integer>();
+			for (int i = 127; i >= 1; i--) b.insert(i);
+			nums(1, 127, b.iterator());
+			assertEquals(120, b.getRotationCount());
+			points += 6;
+		}
 		
-			// only double rotations
-
+		public void testingStressWithOnlyDoubleRotations(){
+			AVLTree<Integer> b = new AVLTree<Integer>();
 			b = new AVLTree<Integer>();	
 			int maxx = 64;
 			int num = maxx / 2;
@@ -242,10 +255,9 @@ public class Testing extends TestCase{
 				num = num/2;
 				start = num;
 			}
-//			System.out.println(b.getRotationCount());
-//			System.out.println(b.doubleCount);
+			nums(0,126,b.iterator());
 			assertEquals(126, b.getRotationCount());
-			points += 2;
+			points += 6;
 		}
 
 		
@@ -259,7 +271,7 @@ public class Testing extends TestCase{
 		
 		Iterator<Integer> i = b.iterator();
 		assertFalse(i.hasNext());
-		points += 6;
+		points += 4;
 	}
 	
 	public void testingAVLRemoveSingleRightRotation(){		
