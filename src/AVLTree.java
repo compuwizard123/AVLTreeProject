@@ -256,6 +256,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		 * @return 	height of the AVLNode
 		 */
 		public int height() {
+			
 			int leftheight = 0, rightheight = 0;
 			if(left != null) {
 				leftheight = 1 + left.height();
