@@ -209,6 +209,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	private class AVLNode {
 		private T element;
+		private int height = 0;
 		private AVLNode left;
 		private AVLNode right;
 		
@@ -256,19 +257,35 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 		 * @return 	height of the AVLNode
 		 */
 		public int height() {
+			return this.height;
+		}
+		
+		/**
+		 * Method that updates the height of the AVLNode
+		 * 
+		 */
+		public void updateHeight() {
+			if(right == null && left == null) {
+				this.height = 0;
+			} else if(right == null) {
+				this.height = 1+left.height();
+			} else if(left == null) {
+				this.height = 1+right.height();
+			} else {
+				int leftheight = 0, rightheight = 0;
+				if(left != null) {
+					leftheight = 1+left.height();
+				}
+				if(right != null) {
+					rightheight = 1+right.height();
+				}
+				if(leftheight > rightheight) {
+					this.height = leftheight;
+				} else { 
+					this.height = rightheight;
+				}
+			}
 			
-			int leftheight = 0, rightheight = 0;
-			if(left != null) {
-				leftheight = 1 + left.height();
-			}
-			if(right != null) {
-				rightheight = 1 + right.height();
-			}
-			if(leftheight > rightheight) {
-				return leftheight;
-			} else { 
-				return rightheight;
-			}
 		}
 		
 		/**
@@ -316,17 +333,23 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 					mod.setTrue();
 				}
 			}
+			updateHeight();
 			return mod.getValue();
 		}
-		
-		public void balance(T item) {
+
+		/**
+		 * A method that balances the AVLTree
+		 * 
+		 * @param item The item that was inserted or removed from the AVLTree
+		 */
+		void balance(T item) {
 			int rightheight = 0;
 			if(right != null) {
-				rightheight = right.height()+1; 
+				rightheight = right.height() + 1; 
 			}
 			int leftheight = 0;
 			if(left != null) {
-				leftheight = left.height()+1; 
+				leftheight = left.height() + 1;
 			}
 			if(leftheight - rightheight == 2) {
 				if(item.compareTo(left.element) < 0 || left.right == null) {
@@ -375,18 +398,16 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			} else {
 				if(item.compareTo(element) > 0) {
 					right = right.remove(item, mod);
-					balance(item);
 				} else if(item.compareTo(element) < 0) {
 					left = left.remove(item, mod);
-					balance(item);
 				} else {
 					T temp = element;
 					AVLNode largestChildNode = findLargestChild(left);
 					element = largestChildNode.element;
 					largestChildNode.element = temp;
-					left = left.remove(temp, mod);	
-					balance(item);
+					left = left.remove(temp, mod);		
 				}
+				balance(item);
 				return this;
 			}
 		}
@@ -403,6 +424,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			}
 			return node;
 		}
+
 		
 		/**
 		 * Method that rotates the tree right around the specified
@@ -419,6 +441,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			node.left = temp1.left;
 			node.element = temp1.element;
 			node.right = temp2;
+			
+			temp2.updateHeight();
+			node.right.updateHeight();
+			node.height = Math.max(node.right.height(), temp2.height()) + 1;
+            
 			rotationCount++;
 			return node;
 		}
@@ -450,6 +477,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 			node.right = temp1.right;
 			node.element = temp1.element;
 			node.left = temp2;
+			
+			temp2.updateHeight();
+			node.left.updateHeight();
+            node.height = Math.max(node.left.height(), temp2.height()) + 1;
+            
 			rotationCount++;
 			return node;
 		}
